@@ -1616,7 +1616,7 @@ C++11中，右值引用就是对一个右值进行引用的类型。由于右值
 
 但是如下列代码所示：
 
-![c++1](./pictures/c++1.PNG)
+![c++1](./pictures/c++1.png)
 
 当类HasPtrMem包含一个成员函数GetTemp,其返回值类型是HasPtrMem,如果我们定义了深拷贝的拷贝构造函数，那么在调用该函数时需要调用两次拷贝构造函数。第一次是生成GetTemp函数返回时的临时变量，第二次是将该返回值赋值给main函数中的变量a。与此对应需要调用三次析构函数来释放内存。
 
@@ -1624,7 +1624,7 @@ C++11中，右值引用就是对一个右值进行引用的类型。由于右值
 
 如下列代码所示，移动构造函数接收一个右值引用作为参数，使用右值引用的参数初始化其指针成员变量。
 
-![c++1_1](./pictures/c++1_1.PNG)
+![c++1_1](./pictures/c++1_1.png)
 
 #### 2.6.5、完美转发：
 
@@ -1634,11 +1634,11 @@ C++11中，右值引用就是对一个右值进行引用的类型。由于右值
 
 C++11采用引用折叠的规则，结合新的模板推导规则实现完美转发。其引用折叠规则如下：
 
-![c++1_2](./pictures/c++1_2.PNG)
+![c++1_2](./pictures/c++1_2.png)
 
-![c++1_3](./pictures/c++1_3.PNG)
+![c++1_3](./pictures/c++1_3.png)
 
-![c++1_4](./pictures/c++1_4.PNG)
+![c++1_4](./pictures/c++1_4.png)
 
 #### 2.6.6、 Lambda表达式
 
@@ -1806,7 +1806,7 @@ TCP会利用窗口控制来提高传输速度，意思是在一个窗口大小�
 
 3. Client收到确认后，检查ack是否为J+1，ACK是否为1，如果正确则将标志位ACK置为1，ack=K+1，并将该数据包发送给Server，Server检查ack是否为K+1，ACK是否为1，如果正确则连接建立成功，Client和Server进入ESTABLISHED状态，完成三次握手，随后Client与Server之间可以开始传输数据了。
 
-![c++2](./pictures/c++2.PNG)
+![c++2](./pictures/c++2.png)
 
 - 四次挥手：
 
@@ -1825,11 +1825,11 @@ TCP会利用窗口控制来提高传输速度，意思是在一个窗口大小�
 参考回答：
 四层TCP/IP模型如下：
 
-![c++2_1](./pictures/c++2_1.PNG)
+![c++2_1](./pictures/c++2_1.png)
 
 其状态转移图如下：
 
-![c++2_2](./pictures/c++2_2.PNG)
+![c++2_2](./pictures/c++2_2.png)
 
 #### 3.1.4、OSI七层模型和TCP/IP四层模型，每层列举2个协议
 
@@ -2159,7 +2159,7 @@ TRACE    回显服务器收到的请求，主要用于测试或诊断。
 
 　　我们都知道HTTPS能够加密信息，以免敏感信息被第三方获取，所以很多银行网站或电子邮箱等等安全级别较高的服务都会采用HTTPS协议。
 
-![c++3](./pictures/c++3.PNG)
+![c++3](./pictures/c++3.png)
 
 客户端在使用HTTPS方式与Web服务器通信时有以下几个步骤，如图所示。
 
@@ -2170,7 +2170,7 @@ TRACE    回显服务器收到的请求，主要用于测试或诊断。
 （5）Web服务器利用自己的私钥解密出会话密钥。
 （6）Web服务器利用会话密钥加密与客户端之间的通信。
 
-![c++3_1](./pictures/c++3_1.PNG) 
+![c++3_1](./pictures/c++3_1.png) 
 
 [HTTP与HTTPS的详细参考](https://blog.csdn.net/xiaoming100001/article/details/81109617)
 
@@ -2237,7 +2237,7 @@ MAC地址是一个硬件地址，用来定义网络设备的位置，主要由�
 服务端：socket-bind-listen-accept
 客户端：socket-connect
 
-![c++4](./pictures/c++4.PNG)
+![c++4](./pictures/c++4.png)
 
 [socket的参考](https://blog.csdn.net/pashanhu6402/article/details/96428887)
 
@@ -2560,7 +2560,7 @@ show profiles; 显示SQL查询的profiles概况
 show profile all for query X; 查看第X条语句的所有执行情况。
 show profile cpu, block io, memory for query X; 查看部分profile信息。
 
-![mysql18](./pictures/mysql18.PNG)
+![mysql18](./pictures/mysql18.png)
 
 #### 4.1.12、MySQL查询的步骤
 
