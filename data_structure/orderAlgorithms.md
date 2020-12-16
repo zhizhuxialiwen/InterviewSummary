@@ -2,9 +2,9 @@
 
 ## 1、排序算法的时间复杂度
 
-![order1](./pictures/order1.PNG)
+![order1](../images/order1.PNG)
 
-![order2](./pictures/order2.PNG)
+![order2](../images/order2.PNG)
 
 ## 2、冒泡排序(Bubble Sort)--交换排序：每次选出最大值
 
@@ -50,7 +50,7 @@ int main()
 平均时间复杂度O(nlogn)
 快速排序的基本思想是：通过一趟排序将待排记录分割成独立的两部分，其中一部分记录的关键字均比另外一部分记录的关键字小，则可分别对这两部分记录继续进行排序，以达到整个序列有序的目的。
 
-![order3](./pictures/order3.PNG)
+![order3](../images/order3.PNG)
 
 方法一：
 
@@ -89,7 +89,7 @@ void QuickSort(int *p, int l, int r)
 
 方法二：
 
-![order4](./pictures/order4.PNG)
+![order4](../images/order4.PNG)
 
 ## 4、直接插入排序--插入排序
 
@@ -240,7 +240,7 @@ int main()
 平均时间复杂度是选取的增量有关
     希尔排序是把记录按下标的一定增量分组，对每组使用直接插入排序算法排序；随着增量逐渐减少，每组包含的关键词越来越多，当增量减至1时，整个文件恰被分成一组，算法便终止。
 
-![order5](./pictures/order5.PNG)
+![order5](../images/order5.PNG)
 
 ```c++
 void ShellSort(int *p, int length)
@@ -317,7 +317,7 @@ int main()
 
    堆是具有下列性质的完全二叉树：每个结点的值都大于或等于其左右孩子结点的值，称为大顶堆；或者每个结点的值都小于或等于其左右孩子结点的值，称为小顶堆。
 
-![order6](./pictures/order6.PNG)
+![order6](../images/order6.PNG)
 
 
 根节点：5；子节点：左子节点2，右子节点8；子子节点：子子左节点3，
@@ -337,7 +337,7 @@ int main()
 // 所需辅助空间 ------ O(1)
 // 稳定性 ------------ 不稳定
 
-![order7](./pictures/order7.PNG)
+![order7](../images/order7.PNG)
 
 主要问题：
 1.如何由一个无序序列构建成一个堆？
@@ -472,7 +472,7 @@ int main()
 // 所需辅助空间 ------ O(n)
 // 稳定性 ------------ 稳定
 
-![order8](./pictures/order8.PNG)
+![order8](../images/order8.PNG)
 
 ```c++
 #include <stdio.h>
