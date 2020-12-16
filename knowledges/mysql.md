@@ -230,7 +230,7 @@ mysql>create table useinfo(id int auto_increment primary key,  name varchar(32) 
 mysql> insert into useinfo(name, depart_id) values('liwen a', 1);
 ```
 
-![mysql1](./pictures/mysql1.PNG)
+![mysql1](../images/mysql1.PNG)
 原因：由于dep的id由1 ~ 4，useinfo表的depart_id通过外键限制为1 ~ 4。
 
 2）多对多
@@ -269,7 +269,7 @@ mysql> create table b2g(id int auto_increment primary key, bid int not null defa
 mysql> select *from boy left join b2g on  boy.id=b2g.id left join girl on girl.id =b2g.gid;
 ```
 
-![mysql2](./pictures/mysql2.PNG)
+![mysql2](../images/mysql2.PNG)
 
 ### 1.9、数据的导出导入
 
@@ -320,22 +320,22 @@ Mysqldump只使用少量数据
 ### 2.2、整数类型
 
 整数类型的取值范围
-![mysql3](./pictures/mysql3.PNG)
+![mysql3](../images/mysql3.PNG)
 整数类型宽度
 int(n), n为宽度，小于n补0。
 mysql> create table test_int_width(a int(4), b int(5) unsigned, c int(5) unsigned zerofill, d int(5) unsigned zerofill) engine=innodb charset=utf8;
-![mysql4](./pictures/mysql4.PNG)
+![mysql4](../images/mysql4.PNG)
 
 ### 2.3、浮点型类型
 
 浮点类型的取值范围
-![mysql5](./pictures/mysql5.PNG)
+![mysql5](../images/mysql5.PNG)
 Decimal(m,d)
 设一个字段定义为float(6,3)，如果插入一个数123.45678,实际数据库里存的是123.457，但总个数还以实际为准，即6位。整数部分最大是3位，如果插入数12.123456，存储的是12.1234，如果插入12.12，存储的是12.1200.
 例如：
 mysql> create table test_float(score float(5,2));
 
-![mysql6](./pictures/mysql6.PNG)
+![mysql6](../images/mysql6.PNG)
 
 总结：float(m,d)的m表示整数+小数d总长度，不包括点号，d表示显示小数的长度。
 
@@ -344,7 +344,7 @@ float，double等非标准类型，在DB中保存的是近似值，而Decimal则
 
 ### 2.4、字符串类型
 
-![mysql7](./pictures/mysql7.PNG)
+![mysql7](../images/mysql7.PNG)
 
 char和varchar：
 1.char(n) 若存入字符数小于n，则以空格补于其后，查询之时再将空格去掉。所以char类型存储的字符串末尾不能有空格，varchar不限于此。 
@@ -366,7 +366,7 @@ mysql> create table test_char(name char(5), address varchar(5))engine=innodb cha
 mysql> insert into test_char values('a','b'),(' a',' b'),('a ', 'b '),(' a ',' b ');
 ```
 
-![mysql8](./pictures/mysql8.PNG)
+![mysql8](../images/mysql8.PNG)
 
 总结：char类型在字符串前面补空格进行计算，后面不空格无效；varchar在字符串前后补空格都进行计算。
 
@@ -380,11 +380,11 @@ gbk一个汉字占2个字节，最大n=65532/2=32766;utf8一个汉字占3个字�
 
 BLOB 是一个二进制的对象，用来存储可变数量的数据。
 
-![mysql9](./pictures/mysql9.PNG)
+![mysql9](../images/mysql9.PNG)
 
 ### 2.6、日期时间类型
 
-![mysql10](./pictures/mysql10.PNG)
+![mysql10](../images/mysql10.PNG)
 
 例如，
 
@@ -393,7 +393,7 @@ mysql> create table test_time(date_value date, time_value time, year_value year,
 mysql> insert into test_time values(now(), now(), now(),now(),now());
 ```
 
-![mysql11](./pictures/mysql11.PNG)
+![mysql11](../images/mysql11.PNG)
 
 Datetime 与timestamp的区别：
 （1）Datetime占8个字节，timestamp占4个字节。
@@ -405,7 +405,7 @@ Datetime 与timestamp的区别：
 
 枚举类型适用于固定类型
 
-![mysql12](./pictures/mysql12.PNG)
+![mysql12](../images/mysql12.PNG)
 
 ### 2.8、选择数据类型的基本原则
 
@@ -420,7 +420,7 @@ InnoDB 数据存储引擎和数据列： varchar。
 （1）非空not null
 `mysql>  create table test_null(id int, name varchar(20) not null)charset=utf8;`
 
-![mysql13](./pictures/mysql13.PNG)
+![mysql13](../images/mysql13.PNG)
 
 （2）唯一约束 unique [key| index]
 字段唯一性，不能重复
@@ -431,7 +431,7 @@ InnoDB 数据存储引擎和数据列： varchar。
 例如：
 mysql> `alter table test_null add unique(id);`
 
-![mysql14](./pictures/mysql14.PNG)
+![mysql14](../images/mysql14.PNG)
 
 （3）主键约束primary key
 a)唯一性，不为空not null;
@@ -453,7 +453,7 @@ d)若表没有主键，则非空且为一列为主键
 `mysql> alter table test_primary_key change id id int not null auto_increment;`
 
 删除自增长：`mysql> alter table test_primary_key change id id int not null;`
-![mysql15](./pictures/mysql15.PNG)
+![mysql15](../images/mysql15.PNG)
 
 （5）默认约束
 添加、删除默认约束：
@@ -462,7 +462,7 @@ d)若表没有主键，则非空且为一列为主键
 `mysql> alter table boy alter num set default 0;`
 `mysql> insert into table(bname) values('liwei');`
 
-![mysql16](./pictures/mysql16.PNG)
+![mysql16](../images/mysql16.PNG)
 
 （6） 外键约束
 外键约束要求使用数据表存储引擎，且只能为InnoDB.
@@ -483,7 +483,7 @@ mysql> insert into student(id, name, teacher_id) values(1,'liwen',1);
 
 student的id=1，teacher的teacher_id 为2无法获取student的id=1。
 
-![mysql17](./pictures/mysql17.PNG)
+![mysql17](../images/mysql17.PNG)
 
 ### 2.10、 索引
 
