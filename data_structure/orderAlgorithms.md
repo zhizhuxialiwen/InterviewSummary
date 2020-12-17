@@ -62,34 +62,78 @@ int main()
 4. 找到一个小于base的值rValue或找到一个大于base的值lValue与base进行交换。
 
 ```c++
-void QuickSort(int *p, int l, int r)
+void quickSort(int left, int right, vector<int>& arr)
 {
-    if (l< r)
-    {
-        int i = l, j = r, x = p[l];
-        while (i < j)
-        { 
-           /*若从右向左找第一个数大于x的数 ，则输出p[j--]的值*/ 
-            while (i < j && p[j] >= x)  
-                j--;
-            if (i < j)
-                p[i] = p[j];
-            /*若从左向右找第一个数小于等于x的数 ，则输出p[i++]的值*/
-            while (i < j && p[i]< x) 
-                i++;
-            if (i < j)
-                p[j] = p[i];
-        }
-        p[i] = x;
-        QuickSort(p, l, i - 1); // 递归调用 
-        QuickSort(p, i + 1, r);  
-    }
+	if(left >= right)
+		return;
+	int i, j, base, temp;
+	i = left, j = right;
+	base = arr[left];  //取最左边的数为基准数
+	while (i < j)
+	{
+		while (arr[j] >= base && i < j)
+			j--;
+		while (arr[i] <= base && i < j)
+			i++;
+		if(i < j)
+		{
+			temp = arr[i];
+			arr[i] = arr[j];
+			arr[j] = temp;
+		}
+        //swap(arr[i], arr[j]);
+	}
+	//基准数归位
+	arr[left] = arr[i];
+	arr[i] = base;
+    //swap(arr[i], arr[left]);
+	quickSort(left, i - 1, arr);//递归左边
+	quickSort(i + 1, right, arr);//递归右边
 }
 ```
 
 方法二：
 
 ![order4](../images/order4.PNG)
+
+方法三：
+
+```c++
+int quick_sort_once (vector<int> & data, int left, int right) {
+    int l = left;
+    int r = right;
+    int key = data[l];
+    while(l < r) {
+        if(l < r && key <= data[r]) {
+            r--;
+        }
+        if(l < r) {
+            data[l] = data[r];
+        }
+
+        if(l < r && key >= data[l]) {
+            l++;
+        }
+        if(l < r) {
+            data[r] = data[l];
+        }
+    }
+    //data[l] = key;
+    return l;
+}
+void quick_sort(vector<int> & data, int left, int right) {
+    if (left >= right) {
+        return;
+    }
+
+    if(left < right) {
+        int mid = 0;
+        mid = quick_sort_once(data, left, right);
+        quick_sort(data, left, mid-1);
+        quick_sort(data, mid+1, right);
+    }
+}
+```
 
 ## 4、直接插入排序--插入排序
 
@@ -112,12 +156,15 @@ void StrInserSort(int *p, int length)
     {
         if ( p[i]<p[i-1])
         {
-          int tmp;
-          tmp = p[i]; 
-          for (j = i - 1; p[j] > tmp; j--)//p[i]与p[i-1]、p[i-2]...p[0]比较
-             p[j+1] = p[j];
-          //前面减一
-          p[j+1] = tmp;
+            int tmp;
+            tmp = p[i]; 
+            //p[i]与p[i-1]、p[i-2]...p[0]比较
+            for (j = i - 1; p[j] > tmp; j--) {
+                p[j+1] = p[j];
+            }
+            
+            //前面减一
+            p[j+1] = tmp;
         }
     }
 }
