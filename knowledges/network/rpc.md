@@ -57,7 +57,7 @@ RPC调用过程如下：
 在Python中可以使用struct模块对二进制进行编码和解码：
 struct.pact将其它类型转换为二进制，通常用于消息长度的转换：
 
-```c++
+```go
 import struct
 
 # 将整数2转换成适用网络传输的无符号的4个字节整数
@@ -80,7 +80,7 @@ byte_data = '\x00\x00\x00\x02'
  
 RPC使用TCP进行传输控制的实现
 
-```c++
+```go
  1 import socket
  2 
  3 class Channel(object):
