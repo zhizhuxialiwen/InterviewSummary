@@ -752,7 +752,7 @@ ticker := time.NewTicker(time.Second)
 
 - **引用类型**
 
-引用类型包括指针，slice切片，map ，chan，interface。
+引用类型包括slice切片，map ，chan，interface。
 变量直接存放的就是一个内存地址值，这个地址值指向的空间存的才是值。所以修改其中一个，另外一个也会修改（同一个内存地址）。
 引用类型必须申请内存才可以使用，make()是给引用类型申请内存空间。
 
@@ -1451,8 +1451,9 @@ Golang的主线程（进程）：一个Golang的主线程（进程）可以起�
 
 #### 4.1.1 开启多个协程: sync.WaitGroup
 
-//1、主线程与协程的执行顺产：若主线程执行完，则协程退出；若协程执行完，主线程进行执行.
-`var wg sync.WaitGroup //监听协程完成 :g.Add(1) -》程序-》 wg.Done() -》wg.Wait() `
+//1、主线程与协程的执行顺产：若主线程执行完，则协程退出；若协程执行完，主线程进行执行。
+
+`var wg sync.WaitGroup //监听协程完成 :g.Add(1) -》程序-》 wg.Done() -》wg.Wait()`
 
 ```go
 package main
@@ -1516,7 +1517,7 @@ main:  4
 runtime.GOMAXPROCS()函数设置程序并发占用的CPU的逻辑核心数，可以设置CPU的个数。
 runtime.NumCPU 获取当前计算机上面的CPU个数
 
-#### 4.1.3 （3）Goroutine 与for实现多协程执行并发
+#### 4.1.3 Goroutine 与for实现多协程执行并发
 
 ```go
 package main
@@ -1550,23 +1551,23 @@ func main(){
 ### 4.2 channel
 
 Channel是管道，先入先出原则,是一种引用数据类型。
-引用数据类型的总结：切片slice、集合map、管道channel、指针
+引用数据类型的总结：切片slice、集合map、管道channel
 make的总结：切片slice、集合map、管道channel
 
-声明管道channel： var 变量 chan 元素类型
-例如：var ch1 chan int
+声明管道channel：`var 变量 chan 元素类型`
+例如：`var ch1 chan int`
 
 - 创建管道channel
 
 Ch : = make(chan int, 3)
 管道有发送（send）、接收（receive）和关闭（close）三个操作
 （1）发送（将数据放在管道内）
-ch <- 10  //将10放到管道ch内
+`ch <- 10`  //将10放到管道ch内
 （2）接收（从管道内取值）
-x := <- ch //从管道ch中接收到值赋值给变量x
-<- ch
+`x := <- ch` //从管道ch中接收到值赋值给变量x
+`<- ch`
 （3）关闭
-Close(ch)
+`Close(ch)`
 
 #### 4.2.1 管道基本使用
 
@@ -1603,7 +1604,7 @@ func main(){
     <- ch1
     <- ch1
     a4 := <- ch1
-    fmt.Println(a4) //25
+    fmt.Println(a4) //253
     //6 管道阻塞:
     //1）存放管道的数据大于管道容量会造成阻塞
     //2) 若管道的内容已经去完，再次取值i会造成阻塞
@@ -1616,6 +1617,7 @@ func main(){
     //a7 := <- ch3 //超出管道取值范围，fatal error: all goroutines are asleep - deadlock!
     //fmt.Println(a5,a6,a7)
     fmt.Println(a5,a6)
+
     
 }
 
@@ -1642,7 +1644,7 @@ func main(){
     for i :=1; i <= 10; i++{
         ch1 <- i 
     }
-    close(ch1) //必须关闭管道
+    defer close(ch1) //必须关闭管道
     // //管道没有key，只有value
     // for v := range ch1{
     //  fmt.Println(v)
@@ -1746,6 +1748,8 @@ func main(){
 #### 4.2.5 select多路复用
 
 Select用于同时从多个通道获取数据。
+
+```go
 Select {
 Case <- ch1:
 ...
@@ -1754,6 +1758,8 @@ Case  data := <- ch2:
 Default:
 ...
 }
+```
+
 当select 随机选取case，当所有case 执行完，则结束select。
 
 ```go
@@ -1765,10 +1771,12 @@ import (
 
 func main(){
     intChan := make(chan int , 4)
+    //defer close(intChan)
     for i :=0 ; i < 4; i++{
         intChan <- i;
     }
     strChan := make(chan string, 4)
+    //defer close(strChan )
     for i :=0 ; i < 4; i++{
         strChan <- "hello" + fmt.Sprintf("%d",i);
     }
@@ -1907,7 +1915,7 @@ func main(){
 主线程完成
 ```
 
-## 5反射
+## 5、反射
 
 既然反射就是用来检测存储在接口变量内部(值value；类型concrete type) pair对的一种机制。
 
@@ -1915,13 +1923,19 @@ func main(){
 
 - reflect.ValueOf：直接给到了我们想要的具体的值，如1.2345这个具体数值。
 
+- 场景
+
+golang中反射最常见的使用场景是做对象的序列化（serialization，有时候也叫Marshal & Unmarshal）。
+
+例如，Go语言标准库的encoding/json、encoding/xml、encoding/gob、encoding/binary等包就大量依赖于反射功能来实现。
+
 ### 5.1 反射类型reflect.TypeOf(变量名) 
 
 判断空接口的类型？值是什么？
 方法：
 1、可以使用类型断言：变量名.(string)
 2、可以使用反射实现:
-V:= reflect.TypeOf(变量名) 
+V := reflect.TypeOf(变量名) 
 
 ```go
 package main
@@ -1946,9 +1960,9 @@ func main(){
     f := 3.44
     b := true
     str := "liwen"
-    reflectType(a)  //类型：int， 类型名称：int，种类：intfloat64
+    reflectType(a) //类型：int， 类型名称：int，种类：intfloat64
     reflectType(f) //foat64
-    reflectType(b)//bool
+    reflectType(b) //bool
     reflectType(str)
     var a1 myInt = 11
     person1 := Person{
@@ -2026,14 +2040,17 @@ string类型的原始值liwenhello
 ### 5.3 通过反射设置变量的值
 
 修改变量的值：
+
+```go
 Func (v Value) SetBool(x bool)
 Func (v Value) SetInt(x int64)
 Func (v Value) SetString(x string)
+```
 
 值传递类型：
-reflect.ValueOf(x).Kind()
+`reflect.ValueOf(x).Kind()`
 地址传递类型：
-reflect.ValueOf(x).Elem().Kind()
+`reflect.ValueOf(x).Elem().Kind()`
 
 ```go
 package main
@@ -2073,6 +2090,29 @@ wen
 ### 5.4 结构体反射：属性
 
 #### 5.4.1 通过反射显示结构体字段
+
+```go
+type Student struct{
+    Name string `json:"name" form:"username"`
+    Age int `json:"age"`
+    Score int `json:"score"`
+}stu1
+
+//1 通过类型变量的Filed获取结构体字段:索引
+field1 := reflect.TypeOf(stu1).Field(0) //Name
+field1.Name //字段名称：Name
+field1.Type //字段类型：string
+field1.Tag.Get("json") // 字段Tag：name
+field1.Tag.Get("form") //字段Tag：username
+
+//2. 通过变量FieldByName获得结构体字段:key
+field2, ok := reflect.TypeOf(stu1).FieldByName("Age")
+
+//3. 通过变量NumField获得结构体字段有几个字段属性
+var fieldCount =  t.NumField() //3个字段属性
+```
+
+例如
 
 ```go
 package main
@@ -2155,7 +2195,9 @@ liwne
 属性名称：Score,属性值：{Score  int json:"score" 24 [2] false},属性类型：int, 属性Tag:json:"score"
 ```
 
-#### 5.4.2 打印结构体方法
+#### 5.4.2 打印结构体方法method()
+
+例如
 
 ```go
 func PrintStructMethod (stu1 interface{}){
@@ -2165,7 +2207,7 @@ func PrintStructMethod (stu1 interface{}){
         return
     }
     //1 通过method获取结构体方法
-    method1 := t.Method(0)
+    method1 := t.Method(0) //获取第一个方法：GetInfo()
     fmt.Println(method1.Name) //GetInfo
     fmt.Println(method1.Type) //func(main.Student) string
     //2 通过结构体获取结构体有多少方法
@@ -2176,7 +2218,7 @@ func PrintStructMethod (stu1 interface{}){
     }
     //3 通过值变量执行方法,获取值
     v := reflect.ValueOf(stu1)
-    fn0:= v.Method(0).Call(nil) //GetInfo()
+    fn0:= v.Method(0).Call(nil) //获取第一个方法：GetInfo()
     fmt.Println(fn0) // [姓名：liwne, 年龄：12, 分数： 34    ]
     fn1 := v.MethodByName("GetInfo").Call(nil) //GetInfo()
     fmt.Println(fn1)  //[姓名：liwne, 年龄：12, 分数： 34]
@@ -2205,12 +2247,9 @@ func main(){
 输出结果：
 GetInfo
 func(*main.Student) string
-[姓名：liwne, 年龄：12, 分数： 34
-]
-[姓名：liwne, 年龄：12, 分数： 34
-]
-[姓名：liwen, 年龄：24, 分数： 56
-]
+[姓名：liwne, 年龄：12, 分数： 34]
+[姓名：liwne, 年龄：12, 分数： 34]
+[姓名：liwen, 年龄：24, 分数： 56]
 方法数量： 2
 ```
 
@@ -2254,20 +2293,20 @@ func main(){
 
 1. 方法一：流方式读取（大文件）
 
-- 只读方式打开文件 file,err := os.Open(“文件”)
-- 读文件file.Read(读取存放的数据)
-- 关闭文件 defer file.Close()
+- 只读方式打开文件 `file,err := os.Open(“文件”)`
+- 读文件`file.Read`(读取存放的数据)
+- 关闭文件 `defer file.Close()`
 
 2. 方法二：流的方式bufio读取文件（大文件）
 
-- 只读方式打开文件 file,err := os.Open(“文件”)
-- 创建reader对象 reader := bufio.NewReader(file)
-- ReadString 读取文件 line,err := reader.ReadString(“\n”)
-- 关闭文件 defer file.Close()
+- 只读方式打开文件 `file,err := os.Open(“文件”)`
+- 创建reader对象 `reader := bufio.NewReader(file)`
+- ReadString 读取文件 `line,err := reader.ReadString(“\n”)`
+- 关闭文件 `defer file.Close()`
 
-3. 方法三：ioutil 一次读完文件数据（小文件100~200M）
+3. 方法三：ioutil(In out utility,输入输出功能) 一次读完文件数据（小文件100~200M）
 
-- ioutil.ReadFile(“文件”)
+- `ioutil.ReadFile(“文件”)`
 自动关闭文件
 
 - 例1：方法一：流方式读取（大文件）
@@ -2370,20 +2409,20 @@ func main(){
 
 1. 方法一：
 
-- 打开文件 file,err := os.OpenFile(“文件”, os.O_CREATE | os.O_RDWR, 0666)
+- 打开文件 `file,err := os.OpenFile(“文件”, os.O_CREATE | os.O_RDWR, 0666)`
 Linux权限配置：文件权限：r(读)04，w(写)02,x（执行）01
 - 写文件
-file.Write([] byte (str)) //写入字节切片数据
-file.Write(“字符串”)//直接写入字符串数据
-- 关闭文件 defer file.Close()
+`file.Write([] byte (str))` //写入字节切片数据
+`file.Write(“字符串”)` //直接写入字符串数据
+- 关闭文件 `defer file.Close()`
 
 2. 方法二： bufio
 
-- 打开文件 file,err := os.OpenFile(“文件”, os.O_CREATE | os.O_RDWR, 0666)
-- 创建writer对象 writer := bufio.NewWriter(file)
-- 将数据写入缓存 writer.WriteString(“liwen\r\n”)
-- 将缓存内容写入文件 writer.Flush()
-- 关闭文件 defer file.Close()
+- 打开文件 `file,err := os.OpenFile(“文件”, os.O_CREATE | os.O_RDWR, 0666)`
+- 创建writer对象 `writer := bufio.NewWriter(file)`
+- 将数据写入缓存 `writer.WriteString(“liwen\r\n”)`
+- 将缓存内容写入文件 `writer.Flush()`
+- 关闭文件 `defer file.Close()`
 
 3. 方法三 ioutil
 
@@ -2587,9 +2626,9 @@ func main(){
 #### 6.3.3、创建目录
 
 创建目录
-os.Mkdir(“文件夹”，0666)
+`os.Mkdir(“文件夹”，0666)`
 创建多个目录
-os.MkdirAll(“./dir1/dir2/dir3”,0666)
+`os.MkdirAll(“./dir1/dir2/dir3”,0666)`
 
 ```go
 package main
