@@ -45,10 +45,10 @@ epoll的核心是3个API，核心数据结构是：**1个红黑树和1个链表*
 1. `int epoll_create(int size)`
 
 功能：
-
+`int epfd =  epoll_create(size);`
 内核会产生一个epoll 实例数据结构并返回一个文件描述符，这个特殊的描述符就是epoll实例的句柄，后面的两个接口都以它为中心（即epfd形参）。
 
-size参数表示所要监视文件描述符的最大值，不过在后来的Linux版本中已经被弃用（同时，size不要传0，会报invalid argument错误）
+size参数表示所要监视文件描述符的最大值，例如socket的个数，不过在后来的Linux版本中已经被弃用（同时，size不要传0，会报invalid argument错误）
 
 2. `int epoll_ctl(int epfd， int op， int fd， struct epoll_event *event)`
 
