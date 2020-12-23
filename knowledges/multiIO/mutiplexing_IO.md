@@ -397,4 +397,4 @@ static void modify_event(int epollfd,int fd,int state)
 
 ## 5、测试结果
 
-![epoll1](../images/epoll1.png)
+![epoll1](../../images/epoll1.png)
