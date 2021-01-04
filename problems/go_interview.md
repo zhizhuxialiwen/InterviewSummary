@@ -455,7 +455,7 @@ func main() {
 
 13. 支持反射
 
-这里的反射(reflecttion)和JAVA中的反射类似，可以用来获取对象类型的相信信息，并动态操作对象。因为反射可能会对程序的可读性有很大的干扰，所以，在Go中只是在特别需要反射支持的地方才实现反射的一些功能。“反射最常见的使用场景是做对象的序列化（serialization，有时候也叫Marshal & Unmarshal）。例如，Go语言标准库的encoding/json、encoding/xml、encoding/gob、encoding/binary等包就大量依赖于反射功能来实现。”
+这里的反射(reflecttion)和JAVA中的反射类似，可以用来获取对象类型的相信信息，并动态操作对象。因为反射可能会对程序的可读性有很大的干扰，所以，在Go中只是在特别需要反射支持的地方才实现反射的一些功能。**反射最常见的使用场景是做对象的序列化（serialization，有时候也叫Marshal & Unmarshal）。** 例如，Go语言标准库的encoding/json、encoding/xml、encoding/gob、encoding/binary等包就大量依赖于反射功能来实现。”
 
 14. 语言的交互性
 
@@ -605,7 +605,8 @@ func main() {
             wg.Done()
         }(i)
     }
-	wg.Wait()
+    wg.Wait()
+}
 ```
 
 考点：go执行的随机性和闭包
@@ -780,6 +781,7 @@ func(set * threadSafeSet) Iter() <-chan interface {} {
 
 解答：看到这道题，我也在猜想出题者的意图在哪里。 chan?sync.RWMutex?go?chan缓存池?迭代? 所以只能再读一次题目，就从迭代入手看看。既然是迭代就会要求set.s全部可以遍历一次。但是chan是为缓存的，那就代表这写入一次就会阻塞。我们把代码恢复为可以运行的方式，看看效果
 
+```go
 package main
 import(
     "sync"
@@ -814,7 +816,11 @@ func main() {
     v := <-th.Iter()
     fmt.Sprintf("%s%v", "ch", v)
 }
-10. 以下代码能编译过去吗？为什么？
+```
+
+### 2.10 以下代码能编译过去吗？为什么？
+
+```go
 package main
 import (
     "fmt"
@@ -836,11 +842,15 @@ func main() {
     think := "bitch"
     fmt.Println(peo.Speak(think))
 }
+```
+
 考点：golang的方法集
 
 解答：编译不通过！做错了！？说明你对golang的方法集还有一些疑问。一句话：golang的方法集仅仅影响接口实现和方法表达式转化，与通过实例或者指针调用方法无关。
 
-11. 以下代码打印出来什么内容，说出为什么。
+### 2.11 以下代码打印出来什么内容，说出为什么。
+
+```go
 package main
 import(
     "fmt"
@@ -861,10 +871,13 @@ func main() {
         fmt.Println("BBBBBBB")
     }
 }
+```
+
 考点：interface内部结构
 
 解答：很经典的题！这个考点是很多人忽略的interface内部结构。 go中的接口分为两种一种是空的接口类似这样：
 
+```go
 var in interface{}
 另一种如题目：
 
@@ -897,7 +910,272 @@ type itab struct {
     _type  *_type          //结构类型    
     link   *itab    bad    int32    inhash int32    fun    [1]uintptr      //可变大小 方法集合
 }
-可以看出iface比eface 中间多了一层itab结构。 itab 存储_type信息和[]fun方法集，从上面的结构我们就可得出，因为data指向了nil 并不代表interface 是nil，所以返回值并不为空，这里的fun(方法集)定义了接口的接收规则，在编译的过程中需要验证是否实现接口结果：
+```
 
+可以看出iface比eface 中间多了一层itab结构。 itab 存储_type信息和[]fun方法集，从上面的结构我们就可得出，因为data指向了nil 并不代表interface 是nil，所以返回值并不为空，这里的fun(方法集)定义了接口的接收规则，在编译的过程中需要验证是否实现接口结果。
+
+输出结果：
 BBBBBBB
 
+原因：结构体为空，但是接口不为空
+
+## 3、golang 两个协成交替打印1-100的奇数偶数
+
+```go
+package main
+import (
+    "fmt"
+    "time"
+)
+var POOL = 100
+func groutine1(p chan int) {
+    for i := 1; i <= POOL; i++ {
+        p <- i
+        if i%2 == 1 {
+            fmt.Println("groutine-1:", i)
+        }
+    }
+}
+func groutine2(p chan int) {
+    for i := 1; i <= POOL; i++ {
+        <-p
+        if i%2 == 0 {
+            fmt.Println("groutine-2:", i)
+        }
+    }
+}
+func main() {
+    msg := make(chan int)
+    go groutine1(msg)
+    go groutine2(msg)
+    time.Sleep(time.Second * 1)
+}
+
+运行结果:
+groutine-1: 1
+groutine-2: 2
+groutine-1: 3
+groutine-2: 4
+groutine-1: 5
+groutine-2: 6
+groutine-1: 7
+groutine-2: 8
+groutine-1: 9
+groutine-2: 10
+groutine-1: 11
+groutine-2: 12
+groutine-1: 13
+groutine-2: 14
+groutine-1: 15
+groutine-2: 16
+groutine-1: 17
+groutine-2: 18
+groutine-1: 19
+groutine-2: 20
+groutine-1: 21
+groutine-2: 22
+groutine-1: 23
+groutine-2: 24
+groutine-1: 25
+groutine-2: 26
+groutine-1: 27
+groutine-2: 28
+groutine-1: 29
+groutine-2: 30
+groutine-1: 31
+groutine-2: 32
+groutine-1: 33
+groutine-2: 34
+groutine-1: 35
+groutine-2: 36
+groutine-1: 37
+groutine-2: 38
+groutine-1: 39
+groutine-2: 40
+groutine-1: 41
+groutine-2: 42
+groutine-1: 43
+groutine-2: 44
+groutine-1: 45
+groutine-2: 46
+groutine-1: 47
+groutine-2: 48
+groutine-1: 49
+groutine-2: 50
+groutine-1: 51
+groutine-2: 52
+groutine-1: 53
+groutine-2: 54
+groutine-1: 55
+groutine-2: 56
+groutine-1: 57
+groutine-2: 58
+groutine-1: 59
+groutine-2: 60
+groutine-1: 61
+groutine-2: 62
+groutine-1: 63
+groutine-2: 64
+groutine-1: 65
+groutine-2: 66
+groutine-1: 67
+groutine-2: 68
+groutine-1: 69
+groutine-2: 70
+groutine-1: 71
+groutine-2: 72
+groutine-1: 73
+groutine-2: 74
+groutine-1: 75
+groutine-2: 76
+groutine-1: 77
+groutine-2: 78
+groutine-1: 79
+groutine-2: 80
+groutine-1: 81
+groutine-2: 82
+groutine-1: 83
+groutine-2: 84
+groutine-1: 85
+groutine-2: 86
+groutine-1: 87
+groutine-2: 88
+groutine-1: 89
+groutine-2: 90
+groutine-1: 91
+groutine-2: 92
+groutine-1: 93
+groutine-2: 94
+groutine-1: 95
+groutine-2: 96
+groutine-1: 97
+groutine-2: 98
+groutine-1: 99
+groutine-2: 100
+```
+
+## 4、golang互斥锁的两种实现
+
+### 4.1 用Mutex实现
+
+```go
+package main
+import (
+    "fmt"
+    "sync"
+)
+var num int
+var mtx sync.Mutex
+var wg sync.WaitGroup
+func add() {
+    mtx.Lock()
+    defer mtx.Unlock()
+    defer wg.Done()
+    num += 1
+}
+func main() {
+    for i := 0; i < 100; i++ {
+        wg.Add(1)
+        go add()
+    }
+    wg.Wait()
+    fmt.Println("num:", num)
+}
+```
+
+### 4.2 使用chan实现
+
+```go
+package main
+import (
+    "fmt"
+    "sync"
+)
+var num int
+func add(h chan int, wg *sync.WaitGroup) {
+    defer wg.Done()
+    h <- 1
+    num += 1
+    <-h
+}
+func main() {
+    ch := make(chan int, 1)
+    wg := &sync.WaitGroup{}
+    for i := 0; i < 100; i++ {
+        wg.Add(1)
+        go add(ch, wg)
+    }
+    wg.Wait()
+    fmt.Println("num:", num)
+}
+```
+
+## 5、golang map --底层hash表
+
+### 5.1 什么是map?
+
+map是一个可以存储key/value对的一种数据结构，map像slice一样是引用类型，map内部实现是一个hash table，因此在map中存入的数据是无序的（map内部实现）。而每次从map中读取的数据也是无序的，因为golang在设计之初，map迭代器的顺序就是随机的，有别于C/C++（unordermap,底层是hash表），虽然存入map的数据是无序的，但是每次从map中读取的数据是一样的（为什么每次读取顺序不一样）。
+
+### 5.2 声明和初始化
+
+// 声明一个map，因为map是引用类型，所以m是nil
+`var m map[KeyType]ValueType`
+// 初始化方式一，空map，空并不是nil
+`m := map[KeyType]ValueType{}`
+//初始化方式二，两种初始化的方式是等价的
+`m := make(map[KeyType]ValueType)`
+
+### 5.3 基本操作
+
+```go
+m := map[string]int{}
+// 增加一个key/value对
+m["Tony"] = 10
+// 删除Key Tony
+delete(m, "Tony")
+// 修改Key Tony的值
+m["Tony"] = 20
+// 判断某个Key是否存在
+if _, ok := m["Tony"]; ok {
+    fmt.Println("Tony is exists")
+}
+// 遍历map
+for key, value := range m {
+    fmt.Printf("Key = %s, Value = %d", key, value)
+}
+// 使用多个值对map进行初始化
+mp := map[string]int {
+    "Tina": 10,
+    "Divad": 20,
+    "Tom": 5,
+}
+```
+
+### 5.4 Key和Value可以使用什么类型？
+
+Key :只要是可比较（可以使用==进行比较，两边的操作数可以相互赋值）的类型就可以，像整形，字符串类型，浮点型，数组（必须类型相同）；而map，slice和function不能作为Key的类型。
+
+Value :任何类型都可以。
+
+map中关于Key和Value类型参考
+
+对map进行并发访问时需增加同步机制
+map在并发访问中使用不安全，因为不清楚当同时对map进行读写的时候会发生什么，如果像通过goroutine进行并发访问，则需要一种同步机制来保证访问数据的安全性。一种方式是使用sync.RWMutex。
+
+// 通过匿名结构体声明了一个变量counter，变量中包含了map和
+
+```go
+sync.RWMutex
+var counter = struct{
+    sync.RWMutex
+    m map[string]int
+}{m: make(map[string]int)}
+// 读取数据的时候使用读锁
+counter.RLock()
+n := counter.m["Tony"]
+counter.RUnlock()
+// 写数据的使用使用写锁
+counter.Lock()
+counter.m["Tony"]++
+counter.Unlock()
+```
