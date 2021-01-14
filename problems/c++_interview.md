@@ -272,47 +272,45 @@ get 返回内部对象(指针), 由于已经重载了()方法, 因此和直接�
 
 weak_ptr 是一种不控制对象生命周期的智能指针, 它指向一个 shared_ptr 管理的对象. 进行该对象的内存管理的是那个强引用的 shared_ptr. weak_ptr只是提供了对管理对象的一个访问手段。weak_ptr 设计的目的是为配合 shared_ptr 而引入的一种智能指针来协助 shared_ptr 工作, 它只可以从一个 shared_ptr 或另一个 weak_ptr 对象构造, 它的构造和析构不会引起引用记数的增加或减少。weak_ptr是用来解决shared_ptr相互引用时的死锁问题,如果说两个shared_ptr相互引用,那么这两个指针的引用计数永远不可能下降为0,资源永远不会释放。它是对对象的一种弱引用，不会增加对象的引用计数，和shared_ptr之间可以相互转化，shared_ptr可以直接赋值给它，它可以通过调用lock函数来获得shared_ptr。
 
-```
+```c++
 class B;
 class A
 {
 public:
-shared_ptr<B> pb_;
-~A()
-{
-cout<<"A delete\n";
-}
+    shared_ptr<B> pb_;
+    ~A()
+    {
+        cout<<"A delete\n";
+    }
 };
 class B
 {
 public:
-shared_ptr<A> pa_;
-~B()
-{
-cout<<"B delete\n";
-}
+    shared_ptr<A> pa_;
+    ~B()
+    {
+        cout<<"B delete\n";
+    }
 };
 void fun()
 {
-shared_ptr<B> pb(new B());
-shared_ptr<A> pa(new A());
-pb->pa_ = pa;
-pa->pb_ = pb;
-cout<<pb.use_count()<<endl;
-cout<<pa.use_count()<<endl;
+    shared_ptr<B> pb(new B());
+    shared_ptr<A> pa(new A());
+    pb->pa_ = pa;
+    pa->pb_ = pb;
+    cout<<pb.use_count()<<endl;
+    cout<<pa.use_count()<<endl;
 }
 int main()
 {
-fun();
-return 0;
+    fun();
+    return 0;
 }
 ```
 
 可以看到fun函数中pa ，pb之间互相引用，两个资源的引用计数为2，当要跳出函数时，智能指针pa，pb析构时两个资源引用计数会减一，但是两者引用计数还是为1，导致跳出函数时资源没有被释放（A B的析构函数没有被调用），如果把其中一个改为weak_ptr就可以了，我们把类A里面的shared_ptr pb_; 改为weak_ptr pb_; 运行结果如下，这样的话，资源B的引用开始就只有1，当pb析构时，B的计数变为0，B得到释放，B释放的同时也会使A的计数减一，同时pa析构时使A的计数减一，那么A的计数为0，A得到释放。
 
 注意的是我们不能通过weak_ptr直接访问对象的方法，比如B对象中有一个方法print(),我们不能这样访问，pa->pb_->print(); 英文pb_是一个weak_ptr，应该先把它转化为shared_ptr,如：shared_ptr p = pa->pb_.lock(); p->print();
-
-
 
 ##### 2.1.7.1、C++中的智能指针
 
@@ -1872,7 +1870,55 @@ sizeof(a)时候求得是上述表格数值，（字节数）1字节=8bits，避�
 
 例如：short a[100]; sizeof(a)为200字节。
 
- 
+### 2.12 c++中拷贝构造函数的参数类型必须是引用
+
+如果拷贝构造函数中的参数不是一个引用，即形如CClass(const CClass c_class)，那么就相当于采用了传值的方式(pass-by-value)，而传值的方式会调用该类的拷贝构造函数，从而造成无穷递归地调用拷贝构造函数。因此拷贝构造函数的参数必须是一个引用。
+
+```c++
+class CExample
+{
+private:
+    int m_nTest;
+public:
+    CExample(int x) : m_nTest(x)      //带参数构造函数
+    { 
+    cout << "constructor with argument"<<endl;
+    }
+    // 拷贝构造函数，参数中的const不是严格必须的，但引用符号是必须的
+    CExample(const CExample & ex)     //拷贝构造函数
+    {
+    m_nTest = ex.m_nTest;
+    cout << "copy constructor"<<endl;
+    }
+    CExample& operator = (const CExample &ex)   //赋值函数(赋值运算符重载)
+    { 
+    cout << "assignment operator"<<endl;
+    m_nTest = ex.m_nTest;
+    return *this;
+    }
+    void myTestFunc(CExample ex)
+    {
+    }
+};
+```
+
+### 2.13 值、指针、引用传递区别
+
+1. 值传递
+
+形参是实参的拷贝，改变形参的值并不会影响外部实参的值。从被调用函数的角度来说，值传递是单向的（实参->形参），参数的值只能传入，
+
+不能传出。当函数内部需要修改参数，并且不希望这个改变影响调用者时，采用值传递。
+
+2. 指针传递
+
+形参为指向实参地址的指针，当对形参的指向操作时，就相当于对实参本身进行的操作
+
+3. 引用传递
+
+形参相当于是实参的“别名”，对形参的操作其实就是对实参的操作，在引用传递过程中，被调函数的形式参数虽然也作为局部变量在栈
+中开辟了内存空间，但是这时存放的是由主调函数放进来的实参变量的地址。被调函数对形参的任何操作都被处理成间接寻址，即通过
+栈中存放的地址访问主调函数中的实参变量。正因为如此，被调函数对形参做的任何操作都影响了主调函数中的实参变量。
 
 ## 3、计算机网络
 
@@ -2512,7 +2558,7 @@ UDP客户进程或服务器进程只在使用自己的UDP套接字与确定的�
 
 ## 4、数据库
 
-### 4.1、数据库基础
+### 4.1、mysql数据库基础
 
 #### 4.1.1、数据库事务 
 

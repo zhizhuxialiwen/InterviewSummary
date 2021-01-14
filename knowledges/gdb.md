@@ -19,14 +19,15 @@ gdb是一个在UNIX环境下的命令行调试工具。如果需要使用gdb调�
 |9|quit|q|退出gdb环境。|
 |10|List 行号或函数名|l|1）l: 列出源代码，接着上次的位置往下列，每次列10行;2）l  i ,j : 列出从第i行开始到j结束的源代码。3）l 函数名：列出某个函数的源代码。|
 |11|Info break||查看断点信息|
-|12|Delete 断点id|d id|		 delete 命令删除断点和监视点，简写为 d。格式为 delete <断点编号>，表示删除编号指示的断点或监视点，编号可以用命令 info b 查看 |
+|12|Delete 断点id|d id| delete 命令删除断点和监视点，简写为 d。格式为 delete <断点编号>，表示删除编号指示的断点或监视点，编号可以用命令 info b 查看 |
 |13|Clear 断点行号||1） clear <函数名> ；2）clear <行号> ;3)clear <文件名:行号> ;4)clear <文件名:函数名> |
-|14|backtrace|bt|查看各级函数调用及参数,回溯追踪参数或变量|
+|14|backtrace|bt|查看各级函数调用及参数,回溯追踪参数或变量，即查看函数调用的顺序（函数调用栈的信息）|
 |15|start||开始执行程序，停在main函数第一行语句前面等待命令|
 |16|finish||连续运行到当前函数返回为止，然后停下来等待命令|
-|17|frame|f|帧编号|选择栈帧|
-|18|quit |q|退出gdb调试环境|
-|19|watch||观察变量的变化|
+|17|frame N|f  N|帧编号|选择栈帧，即查看当前frame（函数，栈帧）里的变量值等信息|
+|18|info frame| |查看当前函数调用的栈帧信息|
+|19|quit |q|退出gdb调试环境|
+|20|watch||观察变量的变化|
 
 注意，在gdb环境中，可以用上下光标键选择执行过的gdb命令。
 
@@ -302,7 +303,7 @@ int main ()   
 {   
     pid_t fpid; //fpid表示fork函数返回的值  
     int count=0;  
-    fpid=fork(); //拷贝一个新的进程  
+    fpid = fork(); //拷贝一个新的进程  
     if (fpid < 0)   
         printf("error in fork!");   
     else if (fpid == 0) {  
