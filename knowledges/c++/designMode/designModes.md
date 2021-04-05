@@ -1564,7 +1564,7 @@ int main()
 代码的实现比较简单，如下所示：
 
 ```c++
-//抽象管理者  
+//1 抽象管理者  
 class Manager  
 {  
 protected:  
@@ -1574,7 +1574,7 @@ public:
     Manager(Manager *manager, string name):m_manager(manager), m_name(name){}  
     virtual void DealWithRequest(string name, int num)  {}  
 };  
-//经理  
+//2 经理  
 class CommonManager: public Manager  
 {  
 public:  

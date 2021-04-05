@@ -1,75 +1,30 @@
-# STL标准模板库思维导图 
+# STL算法
 
-## 容器目录
+## 1、遍历算法
 
-![STL1](../../images/STL1.png)
+### 1.1 for_each函数
 
-## 1、string字符串容器
+for_each()函数是C++ STL中的一个遍历函数，函数原型如下：
 
-![STL2](../../images/STL2.png)
-![STL2_1](../../images/STL2_1.png)
-![STL2_2](../../images/STL2_2.png)
+```c++
+for_each(InputIterator first, InputIterator last, Function functor);
+```
 
-int a;
-int str1;
-其他类型转string：
-str1 = to_string(a);
+一般情况下使用的时候都是把first作为容器遍历的起始点指针，last是容器的末尾。重点提到的是functor(仿函数)。
 
-## 2、verctor动态数组
+**仿函数是一种在模板类编程时的封装手法，本质上的仿函数是一种类(class)**  但是实际起到的是一种函数的作用，在这个所谓的class中通常都是一个operator()的重载,这个重载是根据programmer的需求产生的，通过调用类的构造函数就使得这个类有了函数的行为。进一步的解释就是，在写代码的时候，总有一部分代码的重用率非常高，通常的情况下我们会把这段代码写成一个顶层函数放在类外，任何的成员函数都可以去调用或访问，但是在编写代码的同时也会产生大量的全局变量，很难维护。为了提高代码的内聚度，我们选择将这部分代码封装到一个类中，通过调用类的含参或默认构造函数来执行这段代码，我们将这种做法成为仿函数。
 
-底层结构：单端数组，以堆存储
+仿函数的机制为编写代码提供了很好的有利于资源管理的手段，如果得到恰当应用的话会写出质量很高的代码。
 
-![STL3](../../images/STL3.png)
-![STL3_1](../../images/STL3_1.png)
+那么我们回过头来看看for_each()，for_each()具有如下的特性：
 
-## 3、deque双向队列容器
+i. for_each()对当前[begin, end)范围内的所有成员进行访问;
+ii. 仿函数对每个成员进行相应操作;
+iii. for_each()返回functor的一个副本;
+iv. for_each()忽略functor的任何返回值;
+v. 算法时间复杂度为 O(n)，n为容器中的变量数目.
 
-底层结构：双端数组
-
-![STL4](../../images/STL4.png)
-![STL4_1](../../images/STL4_1.png)
-
-## 4、stack 栈容器
-
-地层结构:栈，先进后出
-
-![STL5](../../images/STL5.png)
-
-## 5、queue队列容器
-
-地层结构:队列，先进先出
-
-![STL6](../../images/STL6.png)
-
-## 6、list双向链表容器
-
-地层结构:双向链表
-![STL7](../../images/STL7.png)
-![STL7_1](../../images/STL7_1.png)
-
-
-## 7、set/multiset集合
-
-地层结构:红黑树
-
-![STL8](../../images/STL8.png)
-![STL8_1](../../images/STL8_1.png)
-
-
-## 8、map/mutimap键值对集合容器
-
-地层结构:红黑树
-![STL9](../../images/STL9.png)
-![STL9_1](../../images/STL9_1.png)
-![STL9_2](../../images/STL9_2.png)
-
-## 9、算法
-
-### 9.1、常用遍历算法
-
-![STL10](../../images/STL10.png)
-
-#### 9.1.1 for_each函数
+特性 iii 和 iv 在写的时候不太好理解，个人的思路是for_each()的返回值需要用户使用一个相同类型的变量进行记录，函数本身忽略仿函数对当前参量的任何处理，也就是说无法记录参量的最终状态。
 
 例1，for_each函数,不传参
 
@@ -107,8 +62,11 @@ int main()
     for_each(vc.begin(), vc.end(), Play());
     cout<<"See something"<<endl;
 }
+```
 
 结果如下：
+
+```
 new a Play 
 1 
 3 
@@ -150,13 +108,57 @@ int main()
     vector<int> vc(a, a+sizeof(a)/sizeof(int));
     for_each(vc.begin(), vc.end(), Play("Element:"));  //其实 还是关键看  Play函数如何实现的！
 }
-结果：
-Element:1                        
-Element:3                         
-Element:4                              Element:5
 ```
 
-#### 9.1.2 transform函数
+输出结果：
+```
+Element:1                        
+Element:3                         
+Element:4                              
+Element:5
+```
+
+例3，
+
+```c++
+#include <iostream>     // std::cout
+#include <algorithm>    // std::for_each
+#include <vector>       // std::vector
+ 
+void myfunction (int i) {  // function:
+  std::cout << ' ' << i;
+}
+ 
+struct myclass {           // function object type:
+  void operator() (int i) {std::cout << ' ' << i;}
+} myobject;
+ 
+int main () {
+  std::vector<int> myvector;
+  myvector.push_back(10);
+  myvector.push_back(20);
+  myvector.push_back(30);
+ 
+  std::cout << "myvector contains:";
+  for_each (myvector.begin(), myvector.end(), myfunction);
+  std::cout << '\n';
+ 
+  // or:
+  std::cout << "myvector contains:";
+  for_each (myvector.begin(), myvector.end(), myobject);
+  std::cout << '\n';
+ 
+  return 0;
+}
+```
+
+输出结果：
+```
+myvector contains: 10 20 30
+myvector contains: 10 20 30
+```
+
+### 1.2 transform函数
 
 transform函数的作用是：将某操作应用于指定范围的每个元素。transform函数有两个重载版本：
 
@@ -185,8 +187,8 @@ char op(char ch)
 }
 int main()
 {
-    string first,second;
-    cin>>first;
+    string first = "hello";
+    string second;
     second.resize(first.size());
     transform(first.begin(),first.end(),second.begin(),op);
     cout<<second<<endl;
@@ -229,12 +231,9 @@ int main()
 }
 ```
 
-### 9.2、常用查找算法
+## 2 查找算法
 
-![STL10_1](../../images/STL10_1.png)
-![STL10_2](../../images/STL10_2.png)
-
-#### 9.2.1 find函数
+### 2.1 find函数
 
 find() 函数本质上是一个模板函数，用于在指定范围内查找和目标元素值相等的第一个元素。
 
@@ -281,7 +280,7 @@ int main() {
 c.biancheng.net/stl/
 查找成功：30
 
-#### 9.2.2 find_if函数
+### 2.2 find_if函数
 
 有人说，如果我有自己定义的“相等”呢？例如，有一个list<CPerson*>，这个list中的每一个元素都是一个对象的指针，我们要在这个list中查找具有指定age的元素，找到的话就得到对象的指针。
     这时候，你不再能像上面的例子那样做，我们需要用到find_if函数，并自己指定predicate function（即find_if函数的第三个参数，请查阅STL手册）。先看看find_if函数的定义：
@@ -339,7 +338,7 @@ auto it = find_if(mapItems.begin(), mapItems.end(), [&](const pair<int, char*> &
 });
 ```
 
-#### 9.2.2 adjacent_find函数
+### 2.3 adjacent_find函数
 
 `adjacent_find()`函数的作用是用于查找出首个相邻的一对元素的值或者所在位置。它需要使用algorithm头文件。
 这种算法方式只有一种，原型如下：
@@ -382,7 +381,7 @@ cout << endl;
 输出首个相邻元素位置：4
 输出首个相邻元素：5
 
-#### 9.2.4 count函数
+### 2.4 count函数
 
 count和count_if函数是计数函数，先来看一下count函数：
 count函数的功能是：统计容器中等于value元素的个数。
@@ -422,7 +421,7 @@ int main()
 }
 ```
 
-#### 9.2.5 count_if函数
+### 2.5 count_if函数
 
 `count_if(first,last,comp);` first为首迭代器，last为末迭代器，comp为比较函数。
 发现了函数的奥秘了吗？我们来看一下count_if函数STL的源代码：
@@ -437,7 +436,6 @@ template <class InputIterator, class Predicate>
  return ret;
 }
 ```
-
 
 其实comp比较函数才是整个count_if函数的核心，comp比较函数是编程的人写的，返回值是一个布尔型，我相信看完我的例题后，就可以理解这个函数的应用。例题：统计1-10奇数的个数（我的代码）：
 
@@ -473,11 +471,9 @@ int main()
 }
 ```
 
-### 9.3、常用排序算法
+## 3 排序算法
 
-![STL10_3](../../images/STL10_3.png)
-
-#### 9.3.1 merge函数
+### 3.1 merge函数
 
 merge：将两个有序序列合并成一个新的序列，并对新的序列排序
 
@@ -520,7 +516,7 @@ int main()
 }
 ```
 
-#### 9.3.2 sort函数
+### 3.2 sort函数
 
 1.sort函数包含在头文件为`#include<algorithm>`的c++标准库中，调用标准库里的排序方法可以实现对数据的排序，但是sort函数是如何实现的，我们不用考虑！
 
@@ -554,7 +550,7 @@ main()
 输出结果：
 2 4 5 11 12 34 25 55 77 90
 
-#### 9.3.3 random_shuffle函数
+### 3.3 random_shuffle函数
 
 randdom_shuffle函数的功能是：随机打乱一个序列。函数参数：`random_shuffle(first,last);`//first为容器的首迭代器，last为容器的末迭代器。该函数没有任何返回值。
 
@@ -588,7 +584,7 @@ int main()
 输入：1 2 3 4 5
 一个可能的输出：5 3 2 4 1
 
-#### 9.3.4 reverse函数
+### 3.4 reverse函数
 
 reverse函数功能是逆序（或反转），多用于字符串、数组、容器。头文件是`#include <algorithm>`
 
@@ -601,11 +597,9 @@ vector<int> v = {5,4,3,2,1};
 reverse(v.begin(),v.end());//容器v的值变为1,2,3,4,5
 ```
 
-### 9.4、常用拷贝和替换算法
+## 4 常用拷贝和替换算法
 
-![STL10_4](../../images/STL10_4.png)
-
-#### 9.4.1 copy函数
+### 4.1 copy函数
 
 在两个容器之间复制元素：
 例 
@@ -663,7 +657,7 @@ int main ()
 }
 ```
 
-#### 9.4.2 replace函数
+### 4.2 replace函数
 
  replace函数包含于头文件`#include<string>`中。
 
@@ -695,7 +689,7 @@ int main()
 结果如下:
 he is@ # good boy
 
-#### 9.4.3 replace_if函数
+### 4.3 replace_if函数
 
 replace_if()函数是算法标头的库函数，用于根据给定的一元函数替换给定范围内的值，该函数应接受范围内的元素作为参数并返回应可转换为bool的值(如0或1)，它返回值指示给定的元素是否可以替换？
 replace_if()函数的语法
@@ -757,7 +751,7 @@ before replacing, v: 10 20 33 23 11 40 50
 after replacing, v: -1 -1 33 23 11 -1 -1
 ```
 
-#### 9.4.4 swap函数
+### 4.4 swap函数
 
 先来看第一段程序：
 
@@ -783,19 +777,4 @@ int main()
     return 0;
 }
 ```
-
-### 9.5、常用算数生成算法
-
-![STL10_5](../../images/STL10_5.png)
-
-### 9.6、常用集合算法
-
-![STL10_6](../../images/STL10_6.png)
-![STL10_7](../../images/STL10_7.png)
-
-
-
-
-
-
 
