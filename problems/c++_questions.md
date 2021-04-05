@@ -311,3 +311,13 @@ Bladefire
 
 15、你还有什么问题要问么？
 
+
+李文面试
+
+1. c++的虚函数表
+2. epoll与select区别
+3. 值传递与引用的区别
+4. socket的listen的第二个参数
+5. gdb查看栈的命令:frame
+6. go语言的系统泄漏
+7. go语言的包，例如syn.context
