@@ -76,17 +76,19 @@ Android 11 及更高版本支持使用 Android 调试桥 (adb) 从工作站以�
 使用 USB 线将设备连接到主机。
 设置目标设备以监听端口 5555 上的 TCP/IP 连接。
 
-adb tcpip 5555
+`adb tcpip 5555`
 拔掉连接目标设备的 USB 线。
 找到 Android 设备的 IP 地址。例如，对于 Nexus 设备，您可以在设置 > 关于平板电脑（或关于手机）> 状态 > IP 地址下找到 IP 地址。或者，对于 Wear OS 设备，您可以在设置 > WLAN 设置 > 高级 > IP 地址下找到 IP 地址。
 通过 IP 地址连接到设备。
 
-adb connect device_ip_address
+`adb connect device_ip_address`
 确认主机已连接到目标设备：
-
+```
 $ adb devices
 List of devices attached
 device_ip_address:5555 device
+```
+
 现在，您可以开始操作了！
 
 如果 adb 连接断开：
@@ -95,14 +97,14 @@ device_ip_address:5555 device
 通过再次执行 adb connect 步骤重新连接。
 如果上述操作未解决问题，重置 adb 主机：
 
-adb kill-server
+`adb kill-server`
 然后，从头开始操作。
 
 查询设备
 在发出 adb 命令之前，了解哪些设备实例已连接到 adb 服务器会很有帮助。您可以使用 devices 命令生成已连接设备的列表。
 
 
-  adb devices -l
+  `adb devices -l`
   
 作为回应，adb 会针对每个设备输出以下状态信息：
 
@@ -114,12 +116,14 @@ no device：未连接任何设备。
 说明：如果您包含 -l 选项，devices 命令会告知您设备是什么。当您连接了多个设备时，此信息很有用，可帮助您将它们区分开来。
 以下示例展示了 devices 命令及其输出。有三个设备正在运行。列表中的前两行表示模拟器，第三行表示连接到计算机的硬件设备。
 
-
+```
 $ adb devices
 List of devices attached
 emulator-5556 device product:sdk_google_phone_x86_64 model:Android_SDK_built_for_x86_64 device:generic_x86_64
 emulator-5554 device product:sdk_google_phone_x86 model:Android_SDK_built_for_x86 device:generic_x86
 0a388e93      device usb:1-1 product:razor model:Nexus_7 device:flo
+```
+
 模拟器未列出
 adb devices 命令的极端命令序列会导致正在运行的模拟器不显示在 adb devices 输出中（即使在您的桌面上可以看到该模拟器）。当满足以下所有条件时，就会发生这种情况：
 
@@ -133,7 +137,7 @@ adb 服务器未在运行，
 
 停止 adb 服务器，然后按照所示顺序输入以下命令。对于 avd 名称，请提供系统中有效的 avd 名称。如需获取 avd 名称列表，请输入 emulator -list-avds。 emulator 命令位于 android_sdk/tools 目录下。
 
-
+```
 $ adb kill-server
 $ emulator -avd Nexus_6_API_25 -port 5555
 $ adb devices
@@ -141,11 +145,13 @@ $ adb devices
 List of devices attached
 * daemon not running. starting it now on port 5037 *
 * daemon started successfully *
+```
+
 示例 2：在下面的命令序列中，adb devices 显示了设备列表，因为先启动了 adb 服务器。
 
 如果想在 adb devices 输出中看到模拟器，请停止 adb 服务器，然后在使用 emulator 命令之后、使用 adb devices 命令之前，重新启动该服务器，如下所示：
 
-
+```
 $ adb kill-server
 $ emulator -avd Nexus_6_API_25 -port 5557
 $ adb start-server
@@ -153,6 +159,8 @@ $ adb devices
 
 List of devices attached
 emulator-5557 device
+```
+
 如需详细了解模拟器命令行选项，请参阅使用命令行参数。
 
 将命令发送至特定设备
@@ -160,13 +168,15 @@ emulator-5557 device
 
 在以下示例中，先获得了已连接设备的列表，然后使用其中一个设备的序列号在该设备上安装了 helloWorld.apk。
 
-
+```
 $ adb devices
 List of devices attached
 emulator-5554 device
 emulator-5555 device
 
 $ adb -s emulator-5555 install helloWorld.apk
+```
+
 注意：如果您在多个设备可用时发出命令但未指定目标设备，adb 会生成错误。
 
 如果有多个可用设备，但只有一个是模拟器，请使用 -e 选项将命令发送至该模拟器。同样，如果有多个设备，但只连接了一个硬件设备，请使用 -d 选项将命令发送至该硬件设备。
@@ -175,7 +185,7 @@ $ adb -s emulator-5555 install helloWorld.apk
 您可以使用 adb 的 install 命令在模拟器或连接的设备上安装 APK：
 
 
-adb install path_to_apk
+`adb install path_to_apk`
 安装测试 APK 时，必须在 install 命令中使用 -t 选项。如需了解详情，请参阅 -t。
 
 要详细了解如何创建可安装在模拟器/设备实例上的 APK 文件，请参阅构建和运行应用。
@@ -186,26 +196,26 @@ adb install path_to_apk
 您可以使用 forward 命令设置任意端口转发，将特定主机端口上的请求转发到设备上的其他端口。以下示例设置了主机端口 6100 到设备端口 7100 的转发：
 
 
-adb forward tcp:6100 tcp:7100
+`adb forward tcp:6100 tcp:7100`
 以下示例设置了主机端口 6100 到 local:logd 的转发：
 
 
-adb forward tcp:6100 local:logd
+`adb forward tcp:6100 local:logd`
 将文件复制到设备/从设备复制文件
 您可以使用 pull 和 push 命令将文件复制到设备或从设备复制文件。与 install 命令（仅将 APK 文件复制到特定位置）不同，使用 pull 和 push 命令可将任意目录和文件复制到设备中的任何位置。
 
 如需从设备中复制某个文件或目录（及其子目录），请使用以下命令：
 
 
-adb pull remote local
+`adb pull remote local`
 如需将某个文件或目录（及其子目录）复制到设备，请使用以下命令：
 
 
-adb push local remote
+`adb push local remote`
 将 local 和 remote 替换为开发机器（本地）和设备（远程）上的目标文件/目录的路径。例如：
 
 
-adb push foo.txt /sdcard/foo.txt
+`adb push foo.txt /sdcard/foo.txt`
 停止 adb 服务器
 在某些情况下，您可能需要终止 adb 服务器进程，然后重启以解决问题（例如，如果 adb 不响应命令）。
 
@@ -215,22 +225,22 @@ adb push foo.txt /sdcard/foo.txt
 您可以从开发机器上的命令行发出 adb 命令，也可以通过脚本发出。用法如下：
 
 
-adb [-d | -e | -s serial_number] command
+`adb [-d | -e | -s serial_number] command`
 如果只有一个模拟器在运行或者只连接了一个设备，系统会默认将 adb 命令发送至该设备。如果有多个模拟器正在运行并且/或者连接了多个设备，您需要使用 -d、-e 或 -s 选项指定应向其发送命令的目标设备。
 
 您可以使用以下命令来查看所有支持的 adb 命令的详细列表：
 
 
-adb --help
+`adb --help`
 发出 shell 命令
 您可以使用 shell 命令通过 adb 发出设备命令，也可以启动交互式 shell。如需发出单个命令，请使用 shell 命令，如下所示：
 
 
-adb [-d |-e | -s serial_number] shell shell_command
+`adb [-d |-e | -s serial_number] shell shell_command`
 要在设备上启动交互式 shell，请使用 shell 命令，如下所示：
 
 
-adb [-d | -e | -s serial_number] shell
+`adb [-d | -e | -s serial_number] shell`
 要退出交互式 shell，请按 Ctrl + D 键或输入 exit。
 
 注意：在 Android 平台工具 23 及更高版本中，adb 处理参数的方式与 ssh(1) 命令相同。这项变更解决了很多命令注入方面的问题，还使安全执行包含 shell 元字符的命令（如 adb install Let\'sGo.apk）成为可能。不过，这项变更还意味着，对包含 shell 元字符的所有命令的解释也发生了变化。例如，adb shell setprop foo 'a b' 命令现在会返回错误，因为单引号 (') 会被本地 shell 消去，设备看到的是 adb shell setprop foo a b。如需使该命令正常运行，请引用两次，一次用于本地 shell，另一次用于远程 shell，与处理 ssh(1) 的方法相同。例如，adb shell setprop foo "'a b'"。
@@ -238,7 +248,7 @@ adb [-d | -e | -s serial_number] shell
 Android 提供了大多数常见的 Unix 命令行工具。如需查看可用工具的列表，请使用以下命令：
 
 
-adb shell ls /system/bin
+`adb shell ls /system/bin`
 对于大多数命令，都可通过 --help 参数获得命令帮助。许多 shell 命令都由 toybox 提供。对于所有 toybox 命令，都可通过 toybox --help 可获得命令的常规帮助。
 
 另请参阅 Logcat 命令行工具，该工具对监控系统日志很有用。

@@ -20,19 +20,29 @@ sudo apt-get install cmake
 ### 1.3 安装过程
 
 1. 将googletest-release-1.10.0.tar.gz解压，并进入解压后的目录
+
+```
 tar -xzvf googletest-release-1.10.0.tar.gz
 cd googletest-release-1.10.0
+```
 
 2. 编译
+
+```
 mkdir build
 cd build
 cmake ../CMakeLists.txt
 cd ..
 make
+```
 
 3. 拷贝库文件和包含文件
+
+```
 sudo cp lib/* /usr/lib
 sudo cp -r googletest/include/gtest /usr/include
+sudo cp -r googlemock/include/gmock/  /usr/include/
+```
 
 ## 2、简单使用
 

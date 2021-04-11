@@ -597,20 +597,17 @@ int main()
 ```
 
 为了解决该情况，新计算顺序规则为：
-
 ①后缀表达式从左到右求值。这包括函数调用和成员选择表达式。
-
 ②赋值表达式从右向左求值。这包括复合赋值。
-
 ③从左到右计算移位操作符的操作数。
 
- 
+### 2.12 模板类的模板参数自动推导
 
-2.12 模板类的模板参数自动推导
 定义模板类的对象时，可以不指定模板参数，但必须要在构造函数中能推导出模板参数
 
 如：
 
+```c++
 template<class T> struct A {
     explicit A(const T&, ...) noexcept {} // #1
     A(T&&, ...){} // #2
@@ -642,21 +639,29 @@ struct B {
 };
  
 B b{(int*)0, (char*)0}; //正确，推导为B<char *>类型
-2.13 简化重复命名空间的属性列表
+```
+
+### 2.13 简化重复命名空间的属性列表
 如：
 
+```c++
 [[ using CC: opt(1), debug ]] void f() {}
 //作用相同于 [[ CC::opt(1), CC::debug ]] void f() {}
-2.14 不支持、非标准的属性
+```
+
+### 2.14 不支持、非标准的属性
+
 在添加属性列表时，编译器会忽略不支持的非标准的属性，不会发出警告和错误。
 
  
 
-2.15 改写与继承构造函数
+### 2.15 改写与继承构造函数
+
 在类的继承体系中，构造函数的自动调用是一个令人头疼的问题。新特性引入继承与改写构造函数的用法。
 
 例子1：
 
+```c++
 #include<iostream>
  
 struct B1
@@ -669,8 +674,11 @@ struct D1 : B1 {
 };
  
 D1 d1(0);    //正确，委托基类构造函数进行初始化，调用B1::B1(int)
+```
+
 例子2：
 
+```c++
 #include<iostream>
  
 struct B1
@@ -710,8 +718,11 @@ int main()
     D2 d(100);//编译通过，输出B1   B2   D2
     return 0;
 }
+```
+
 例子3：
 
+```c++
 #include<iostream>
  
 struct B1
@@ -747,16 +758,21 @@ int main()
     //D2 default
     return 0;
 }
-2.16 内联变量
+```
+
+### 2.16 内联变量
+
 见1.5
 
  
 
-2.17 用auto作为非类型模板参数
+### 2.17 用auto作为非类型模板参数
+
 当模板参数为非类型时，可用auto自动推导类型
 
 如：
 
+```c++
 #include<iostream>
  
 template<auto T>
@@ -771,14 +787,16 @@ int main()
     foo<int>();//no matching function for call to "foo<int>()"
     return 0;
 }
- 
+```
 
-3 宏
-3.1 __has_include
+## 3 宏
+
+### 3.1 __has_include
+
 判断有没有包含某文件
 
 如：
-
+```c++
 int main()
 {
 #if __has_include(<cstdio>)
@@ -789,12 +807,16 @@ int main()
 #endif
 return 0;
 }
-4 属性
-4.1 fallthrough
+```
+
+## 4 属性
+
+### 4.1 fallthrough
+
 用于switch语句块内，表示会执行下一个case或default
 
 如：
-
+```c++
 int main()
 {
     int ok1, ok2;
@@ -809,11 +831,14 @@ int main()
     }
     return 0;
 }
-4.2 nodiscard
+```
+
+### 4.2 nodiscard
+
 可用于类声明、函数声明、枚举声明中，表示函数的返回值没有被接收，在编译时会出现警告。
 
 如：
-
+```c++
 [[nodiscard]] class A {}; //该属性在这其实没用
 [[nodiscard]] enum class B {}; //该属性在这其实没用
 class C {};
@@ -833,15 +858,20 @@ int main()
     func3();//warning: ignoring return value
     return 0;
 }
-4.3 maybe_unused
+```
+
+### 4.3 maybe_unused
+
 可用于类、typedef、变量、非静态数据成员、函数、枚举或枚举值中。用于抑制编译器对没用实体的警告。即加上该属性后，对某一实体不会发出“没有用”的警告。
 
 用法例子：
-
+```c++
 [[maybe_unused]] class A {};
 [[maybe_unused]] enum B {};
 [[maybe_unused]] int C;
 [[maybe_unused]] void fun();
+```
+
 结语
 本次检验C++17新特性使用了GCC编译器，对于Clang的支持性方面没有做出差异测试。若有问题，欢迎指出
 
