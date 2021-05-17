@@ -46,7 +46,7 @@ int main()
     {
         vec.push_back(i);
     }
-    for_each(vec.begin(),vec.end() ,[](int i)->void{ cout << i <<" "; }); 
+    for_each(vec.begin(),vec.end(), [](int i)->void{ cout << i <<" "; }); 
 
 
     cout<<endl;

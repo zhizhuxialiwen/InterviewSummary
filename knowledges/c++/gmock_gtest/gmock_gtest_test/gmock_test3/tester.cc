@@ -1,5 +1,5 @@
-#include <boost/cstdint.h>
-#include <boost/shared_ptr.h>
+#include <boost/cstdint.hpp>
+#include <boost/shared_ptr.hpp>
 #include <cstdlib>
 #include <gmock/gmock.h>
 

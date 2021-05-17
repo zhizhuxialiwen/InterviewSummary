@@ -82,7 +82,7 @@ int listen(int sockfd, int backlog)
 
 - 服务器端代码 server.c：
 
-```c
+```c++
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -125,7 +125,7 @@ int main(){
 
 - 客户端代码 client.c：
 
-```c
+```c++
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
