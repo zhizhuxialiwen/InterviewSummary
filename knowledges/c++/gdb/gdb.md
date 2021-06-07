@@ -128,7 +128,7 @@ set var name="西施" 把name的值设置为"西施"，注意，不是strcpy。
 |1|set args|　　set args arg1 arg2　|　设置运行参数|
 |2|show args|show args|参看运行参数|
 |3|set width + 数目|set width 70　|　设置GDB的行宽|
-|4|cd + 工作目录　|　cd ../　|　切换工作目录|
+|4|cd + 工作目录　|　cd ../../../　|　切换工作目录|
 |5|run　|　r/run　|　程序开始执行|
 |6|step(s)　　|s　|　进入式（会进入到所调用的子函数中）单步执行，进入函数的前提是，此函数被编译有debug信息|
 |7|next(n)　|　n　|　非进入式（不会进入到所调用的子函数中）单步执行|
@@ -335,12 +335,12 @@ int main ()   
 
 子进程自动执行，父进程进行调试。
 
-![gdb1](../images/gdb1.png)
+![gdb1](../../../images/gdb1.png)
 
 ### 2.4、调试子进程：set follow-fork-mode child
 
-![gdb2](../images/gdb2.png)
-![gdb3](../images/gdb3.png)
+![gdb2](../../../images/gdb2.png)
+![gdb3](../../../images/gdb3.png)
 
 ### 2.5、设置调试模式
 
@@ -355,25 +355,25 @@ int main ()   
 
 例如，父进程跑完，子进程没有运行。
 
-![gdb4](../images/gdb4.png)
-![gdb5](../images/gdb5.png)
+![gdb4](../../../images/gdb4.png)
+![gdb5](../../../images/gdb5.png)
 
 #### 2.5.2、Set detach-on-fork on
 
 `Set follow-fork-mode child` 与 `set detach-on-fork on`: 子进程调试，父进程运行
 
-![gdb6](../images/gdb6.png)
-![gdb7](../images/gdb7.png)
+![gdb6](../../../images/gdb6.png)
+![gdb7](../../../images/gdb7.png)
 
 ### 2.6、查看调试进程： info inferiors(下级)
 
-![gdb8](../images/gdb8.png)
+![gdb8](../../../images/gdb8.png)
 
 *1表示父进程，2表示子进程。
 
 ### 2.7、切换当前调试的进程：inferior 进程id
 
-![gdb9](../images/gdb9.png)
+![gdb9](../../../images/gdb9.png)
 
 ## 3、多线程
 
@@ -396,45 +396,45 @@ int main ()   
 
 ### 3.2、多线程代码：
 
-![gdb10](../images/gdb10.png)
-![gdb11](../images/gdb11.png)
-![gdb12](../images/gdb12.png)
+![gdb10](../../../images/gdb10.png)
+![gdb11](../../../images/gdb11.png)
+![gdb12](../../../images/gdb12.png)
 
 ### 3.3、查看进程与线程命令
 
 #### 3.3.1、查看当前的进程：ps aux | grep book
 
-![gdb13](../images/gdb13.png)
+![gdb13](../../../images/gdb13.png)
 
 #### 3.3.2、查看当前运行的轻量级进程： ps -aL|grep book
 
-![gdb14](../images/gdb14.png)
+![gdb14](../../../images/gdb14.png)
 
 #### 3.3.3、查看主线程与子线程的关系： pstree -p 主线程id
 
-![gdb15](../images/gdb15.png)
+![gdb15](../../../images/gdb15.png)
 
 ### 3.4、查看线程： info threads
 
-![gdb16](../images/gdb16.png)
-![gdb17](../images/gdb17.png)
+![gdb16](../../../images/gdb16.png)
+![gdb17](../../../images/gdb17.png)
 
 ### 3.5、切换线程： thread 线程id
 
 *号表示当前线程
-![gdb18](../images/gdb18.png)
+![gdb18](../../../images/gdb18.png)
 
 ### 3.6、只运行当前线程：set scheduler-locking on 
 
-![gdb19](../images/gdb19.png)
+![gdb19](../../../images/gdb19.png)
 
 ### 3.7、运行全部线程： set scheduler-locking off
 
-![gdb20](../images/gdb20.png)
+![gdb20](../../../images/gdb20.png)
 
 ### 3.8、指定某线程执行某行gdb命令：thread apply 线程id cmd
 
-![gdb21](../images/gdb21.png)
+![gdb21](../../../images/gdb21.png)
 
 ### 3.9、全部的线程执行gdb命令：thread apply all cmd
 
@@ -443,7 +443,7 @@ int main ()   
 
 下载日志包：https://www.freecplus.net/7c7d06c70ade40639a86bdb76359d0d7.html
 
-![gdb22](../images/gdb22.png)
+![gdb22](../../../images/gdb22.png)
 
 ### 4.1、多进程
 
@@ -505,7 +505,7 @@ int main ()   
 
 $ g++  -o  gdbfork.log  forkLog.cpp  _freecplus.cpp
 
-![gdb23](../images/gdb23.png)
+![gdb23](../../../images/gdb23.png)
 
 #### 4.1.2、多线程日志的代码
 
@@ -561,4 +561,4 @@ void *pth2_main(void * arg)
 }
 ```
 
-![gdb24](../images/gdb24.png)
+![gdb24](../../../images/gdb24.png)

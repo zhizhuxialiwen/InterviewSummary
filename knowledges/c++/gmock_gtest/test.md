@@ -103,9 +103,10 @@ TEST(demo, 2) {
 
 3. 编译
 
-```
-Makefile
 
+Makefile文件
+
+```s
 OBJS=demo.o
 
 TARGET=test

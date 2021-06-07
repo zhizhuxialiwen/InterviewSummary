@@ -2,10 +2,10 @@
 
 ## 目录
 
-1、概述
-        1.1 什么是Mock?
-        1.2 Google Mock概述
-2、Google Mock使用
+* 1、概述
+        * 1.1 什么是Mock?
+        * 1.2 Google Mock概述
+* 2、Google Mock使用
         2.1 最简单的例子
         2.2 典型的流程
         2.3 自定义方法/成员函数的期望行为
