@@ -2,27 +2,27 @@
 
 ## 目录
 
-* 1、概述
-        * 1.1 什么是Mock?
-        * 1.2 Google Mock概述
+* 1、概述    
+    * 1.1 什么是Mock?
+    * 1.2 Google Mock概述
 * 2、Google Mock使用
-        2.1 最简单的例子
-        2.2 典型的流程
-        2.3 自定义方法/成员函数的期望行为
-3、Matcher（匹配器）
-        3.1 通配符
-        3.2 一般比较
-        3.3 浮点数的比较
-        3.4 字符串匹配
-        3.5 容器的匹配
-        3.6 成员匹配器
-        3.7 匹配函数或函数对象的返回值
-        3.8 指针匹配器
-        3.9 复合匹配器
-        3.10基数（Cardinalities）
-        3.11 行为（Actions）
-        3.12 序列（Sequences）
-4、Mock实践
+	* 2.1 最简单的例子
+	* 2.2 典型的流程
+	* 2.3 自定义方法/成员函数的期望行为
+* 3、Matcher（匹配器）
+	* 3.1 通配符
+	* 3.2 一般比较
+	* 3.3 浮点数的比较
+	* 3.4 字符串匹配
+	* 3.5 容器的匹配
+	* 3.6 成员匹配器
+	* 3.7 匹配函数或函数对象的返回值
+	* 3.8 指针匹配器
+	* 3.9 复合匹配器
+	* 3.10基数（Cardinalities）
+	* 3.11 行为（Actions）
+	* 3.12 序列（Sequences）
+* 4、Mock实践
 
 
 
@@ -138,10 +138,20 @@ int main(int argc, char** argv) {
 }
 ```
 
-最后我们运行编译，得到的结果如下：
+最后我们运行编译:
+
+```s
+wen@wen-virtual-machine:~/gopath/src/code/c++/gmock_gtest_test/gmock_test1$ g++ FooMain.cpp -o out -lgtest -lgmock -lpthread -std=c++11
+wen@wen-virtual-machine:~/gopath/src/code/c++/gmock_gtest_test/gmock_test1$ ./out 
+```
+
+得到的结果如下：
+
 ```
 Returned Value: Hello World!
 ```
+![gmock2](../../../images/gmock2.png)
+
 在这里：
 
 第15行，初始化一个Google Mock
@@ -445,7 +455,7 @@ Actual: never called – unsatisfied and active
 |AllOf(m1, m2, …, mn)|	argument 匹配所有的匹配器m1到mn|
 |AnyOf(m1, m2, …, mn)|	argument 至少匹配m1到mn中的一个|
 |Not(m)	|argument 不与匹配器m匹配|
- 
+
 
 `EXPECT_CALL(foo, DoThis(AllOf(Gt(5), Ne(10))));`
 传入的参数必须 >5 并且 <= 10 

@@ -13,14 +13,14 @@
 下载googletest
 git clone https://github.com/google/googletest.git
 
-```
+```s
 tar -xzvf googletest-release-1.10.0.tar.gz
 cd googletest-release-1.10.0
 ```
 
 2. 编译
 
-```
+```s
 mkdir build
 cd build
 cmake ../CMakeLists.txt
@@ -30,7 +30,7 @@ make
 
 3. 拷贝库文件和包含文件
 
-```
+```s
 sudo cp lib/* /usr/lib
 sudo cp -r googletest/include/gtest /usr/include
 sudo cp -r googlemock/include/gmock/  /usr/include/
@@ -38,7 +38,7 @@ sudo cp -r googlemock/include/gmock/  /usr/include/
 
 4. 编译
 
-```
+```s
 gtest: g++ gmock_eq.cpp -o out -lgtest -lpthread -std=c++11
 gmock: g++ gmock_eq.cpp -o out -lgtest -lgmock -lpthread -std=c++11
 ```
@@ -66,7 +66,7 @@ https://github.com/google/googletest
 第三步，解压完成后，进入目录，利用g++来编译代码，命令如下：
 * gtest
 
-```
+```s
 g++ -isystem ${GTEST_DIR}/include -I${GTEST_DIR} \
     -pthread -c ${GTEST_DIR}/src/gtest-all.cc
 ar -rv libgtest.a gtest-all.o
@@ -75,7 +75,7 @@ ar -rv libgtest.a gtest-all.o
 Note that (We need `-pthread` as Google Test uses threads.)
 * gmock
 
-```
+```s
 g++ -isystem ${GTEST_DIR}/include -I${GTEST_DIR} \
     -isystem ${GMOCK_DIR}/include -I${GMOCK_DIR} \
     -pthread -c ${GTEST_DIR}/src/gtest-all.cc
@@ -138,7 +138,15 @@ int main(int argc, char **argv) {
 }
 ```
 
-编译: `g++ gtest_test.cpp -o gtest_test -lgtest -lpthread`
+编译: 
+
+\```s
+
+g++ gtest_eq.cpp -o out -lgtest -lpthread -std=c++11
+
+\```
+
+![gtest1](../../../images/gtest1.png)
 
 ### 2.2 gmock测试案例
 
@@ -180,8 +188,11 @@ int main(int argc, char *argv[]) {
 }
 ```
 编译
-`g++ gmock_test.cpp -o gmock_test -lgtest -lgmock -lpthread`
 
+```s
+ g++ -o out gmock_gtesst_1.cpp -lgtest -lgmock -lpthread -std=c++11
+```
+![gmock1](../../../images/gmock1.png)
 
 最后附上GTest/GMock学习文档：
 
